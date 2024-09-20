@@ -1,29 +1,29 @@
-use std::collections::HashMap;
-use serde::{Serialize, Deserialize};
-
+use serde::{Deserialize, Serialize};
+use std::{collections::HashMap, path::PathBuf};
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Config {
     pub projects: HashMap<String, Project>,
-    pub tasks: Option<Vec<Task>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tasks: Option<HashMap<String, Task>>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Project {
-    pub path: String,
+    pub path: PathBuf,
     pub tags: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Task {
-    pub name: String,
     pub commands: Vec<Command>,
     pub environment: Option<HashMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Command {
+    pub name: String,
     pub cmd: String,
-    pub description: String,
-    pub tags: Vec<String>,
+    pub run_on: Option<String>,
+    pub stdout_to_var: Option<String>,
 }
